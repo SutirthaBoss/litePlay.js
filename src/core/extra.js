@@ -752,6 +752,7 @@ export const afinaçãoJusta = justIntonation;
 export const frequênciaParaMidi = frequencyToMidi;
 export const monótono = monotone;
 export const acordeAleatório = randomChord;
+export const acordeEmBloco = blockChord;
 export const arpejo = arpeggio;
 export const iterar = iterate;
 export const sequênciaIntervalar = intervalSequence;
