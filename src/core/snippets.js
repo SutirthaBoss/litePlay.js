@@ -28,7 +28,7 @@ export const SNIPPET_CATEGORIES = [
         id: "play-tune",
         label: "Play a little tune",
         description: "Several play() calls with different start times.",
-        code: "play(C4);\nplay(E4, 0.8, 1);\nplay(G4, 0.8, 2);",
+        code: "play(C4, E4, G4);",
       },
       {
         id: "switch-instrument",
@@ -40,7 +40,7 @@ export const SNIPPET_CATEGORIES = [
         id: "random-instrument",
         label: "Surprise instrument",
         description: "onStruck() picks a random mallet/keyboard sound.",
-        code: "instrument(onStruck());\nplay(C4);",
+        code: "play(onStruck);",
       },
       {
         id: "stop-all",
@@ -58,37 +58,37 @@ export const SNIPPET_CATEGORIES = [
         id: "chord",
         label: "Play a chord",
         description: "blockChord() plays a list of notes together, at once.",
-        code: "blockChord(C4, [C4, E4, G4]).play();",
+        code: "blockChord({onSomething:vibraphone}, [C4,E4,G4]).play()",
       },
       {
         id: "random-chord",
         label: "Random chord",
         description: "randomChord() picks a set of random notes for you.",
-        code: "let chord = randomChord(4);\nblockChord(C4, chord).play();",
+        code: "let chord = randomChord(4);\nblockChord(any, chord).play();",
       },
       {
         id: "transpose",
         label: "Transpose a melody",
         description: "Shifts every note in a list by the same interval.",
-        code: 'let melody = [C4, E4, G4];\nlet shifted = transpose(melody, 5);\nshifted.forEach((n, i) => play(n, 0.8, i));',
+        code: 'let notes = [C4, D4, E4, F4, G4];\nlet transposedNotes = transpose(notes, 6);\nlet transposed = eventList.create();\nfor (let i = 0; i < transposedNotes.length; i++) {\ntransposed.add([transposedNotes[i], midLevel, i+when+1]);\n}\ntransposed.play();',
       },
       {
         id: "invert",
         label: "Invert a melody",
         description: "Flips a melody upside-down around a chosen note.",
-        code: 'let melody = [C4, E4, G4];\nlet flipped = invert(melody, C4);\nflipped.forEach((n, i) => play(n, 0.8, i));',
+        code: 'let original = [C4, D4, E4, F4];\narpeggio(any, {chord: original, direction:"forward"}).play();\nlet inverted = invert(original, C4);\narpeggio({when:5}, {chord: inverted, direction:"forward"}).play();\n',
       },
       {
         id: "microtonal",
         label: "Microtonal scale",
         description: "edo() divides the octave into equal steps.",
-        code: "let scale = edo(24);\nplay(C4 + scale[3]);",
+        code: "let scale = edo(19);\nlet transposedScale = transpose(scale, A4);\nlet list = eventList.create();\nfor (let i = 0; i < transposedScale.length; i++) {\nlist.add([transposedScale[i], loud, i*.2, .2, guitar]);\n}\nlist.play();",
       },
       {
         id: "just-intonation",
         label: "Just intonation scale",
         description: "Builds a scale from pure harmonic ratios.",
-        code: "let scale = justIntonation(C4, 8);\nplay(scale[2]);",
+        code: "let inTune = justIntonation(C4, 13);\nlet list = eventList.create();\nfor (let i = 0; i < inTune.length; i++) {\nlist.add([inTune[i], loud, i*.3, .3, clarinet]);\n}\nlist.play();",
       },
       {
         id: "glissando",
@@ -112,7 +112,7 @@ export const SNIPPET_CATEGORIES = [
         id: "euclidean",
         label: "Euclidean rhythm",
         description: "Spreads hits as evenly as possible across steps.",
-        code: "euclidean(C4, 2, 8, 3).play();",
+        code: "euclidean({what: snare, howLong: .2, onSomething: drums}, 4, 8, 3).play();",
       },
       {
         id: "ostinato",
@@ -148,91 +148,91 @@ export const SNIPPET_CATEGORIES = [
         id: "distortion",
         label: "Distortion",
         description: "0 (clean) to 1 (fully driven).",
-        code: "guitar.distortion(0.7);\nplay(E2);",
+        code: "guitar.distortion(0.7);\nguitar.play(E2);",
       },
       {
         id: "highpass",
         label: "Highpass filter",
         description: "0 (off) to 1 (brightest, thinnest).",
-        code: "piano.highpass(0.4);\nplay(C4);",
+        code: "piano.highpass(0.4);\npiano.play(C4);",
       },
       {
         id: "moog-filter",
         label: "Moog-style filter",
         description: "A classic ladder lowpass; push resonance to self-oscillate.",
-        code: "synth.moogFilter(0.3, 0.85);\nplay(C3);",
+        code: "synth.moogFilter(0.3, 0.85);\nsynth.play(C3);",
       },
       {
         id: "comb-filter",
         label: "Comb filter",
         description: "Turns a note into a ringing, metallic resonance.",
-        code: "marimba.combFilter(2, 0.015);\nplay(C4);",
+        code: "marimba.combFilter(2, 0.015);\nmarimba.play(C4);",
       },
       {
         id: "string-resonance",
         label: "String resonance",
         description: "Adds a sympathetic, ringing string character.",
-        code: "harp.stringResonance(220, 0.93);\nplay(A3);",
+        code: "harp.stringResonance(220, 0.93);\nharp.play(A3);",
       },
       {
         id: "compressor",
         label: "Compressor",
         description: "Squeezes loud notes down toward a threshold.",
-        code: "drums.compressor(0.6, 0.25);\nplay(kick);",
+        code: "drums.compressor(0.6, 0.25);\ndrums.play(kick);",
       },
       {
         id: "tremolo",
         label: "Tremolo",
         description: "An amplitude wobble: rate in Hz, depth 0 to 1.",
-        code: "organ.tremolo(6, 0.6);\nplay(G3);",
+        code: "organ.tremolo(6, 0.6);\norgan.play(G3);",
       },
       {
         id: "limiter",
         label: "Limiter",
         description: "A hard ceiling on volume; lower it for a crunchy clip.",
-        code: "drums.limiter(0.3);\nplay(kick);",
+        code: "drums.limiter(0.3);\ndrums.play(kick);",
       },
       {
         id: "ring-modulate",
         label: "Ring modulation",
         description: "Bell-like, robotic textures.",
-        code: "tinkleBell.ringModulate(233, 0.8);\nplay(C5);",
+        code: "tinkleBell.ringModulate(233, 0.8);\ntinkleBell.play(C5);",
       },
       {
         id: "flanger",
         label: "Flanger",
         description: "A sweeping, metallic comb effect.",
-        code: "guitar.flanger(0.3, 0.006, 0.7);\nplay([E3, 1, 0, 4]);",
+        code: "guitar.flanger(0.3, 0.006, 0.7);\nguitar.play([E3, 1, 0, 4]);",
       },
       {
         id: "chorus",
         label: "Chorus",
         description: "A thicker, wider doubling effect.",
-        code: "strings.chorus(0.25, 0.02);\nplay([C4, 1, 0, 4]);",
+        code: "strings.chorus(0.25, 0.02);\nstrings.play([C4, 1, 0, 4]);",
       },
       {
         id: "phaser",
         label: "Phaser",
         description: "A sweeping series of notches.",
-        code: "pad1.phaser(0.4, 6, 0.85);\nplay([C3, 1, 0, 6]);",
+        code: "pad1.phaser(0.4, 6, 0.85);\npad1.play([C3, 1, 0, 6]);",
       },
       {
         id: "sample-hold",
         label: "Sample & hold",
         description: "Freezes the signal into lo-fi, stepped chunks.",
-        code: "synth.sampleHold(9, 0.7);\nplay(A3);",
+        code: "synth.sampleHold(9, 0.7);\nsynth.play(A3);",
       },
       {
         id: "convolve",
         label: "Convolution reverb",
         description: "Runs the sound through a real recorded space.",
-        code: "piano.convolve(0.6);\nplay(C4);",
+        code: "piano.convolve(0.6);\npiano.play(C4);",
       },
       {
         id: "reverb-tone",
         label: "Shape the reverb",
         description: "Sets the size/brightness of the shared reverb.",
-        code: "piano.reverb(0.8);\nreverbTone(0.9, 0.1);\nplay(C4);",
+        code: "piano.reverb(0.8);\nreverbTone(0.9, 0.1);\npiano.play(C4);",
       },
     ],
   },
@@ -262,13 +262,13 @@ export const SNIPPET_CATEGORIES = [
         id: "pan",
         label: "Pan left/right",
         description: "0 = left, 1 = right, 0.5 = center.",
-        code: "piano.pan(0.2);\nplay(C4);",
+        code: "piano.pan(0.2);\npiano.play(C4);",
       },
       {
         id: "delay",
         label: "Echo / delay",
         description: "Adds a repeating echo.",
-        code: "guitar.delay(0.3, 0.4);\nplay(E3);",
+        code: "guitar.delay(0.3, 0.4);\nguitar.play(E3);",
       },
       {
         id: "autopan",
@@ -279,15 +279,6 @@ export const SNIPPET_CATEGORIES = [
     ],
   },
 ];
-
-const INDENT = "  ";
-
-function indentBlock(code) {
-  return code
-    .split("\n")
-    .map((line) => INDENT + line)
-    .join("\n");
-}
 
 /**
  * Computes the text to insert for a given snippet, without touching the DOM
@@ -302,13 +293,12 @@ function indentBlock(code) {
  */
 export function buildInsertion(doc, cursorPos, code) {
   if (doc.trim() === "") {
-    const before = "function f() {\n" + indentBlock(code) + "\n";
-    const after = "}\nlpRun(f);\n";
+    const text = code;
     return {
       from: 0,
       to: doc.length,
-      insert: before + after,
-      cursor: before.length,
+      insert: text,
+      cursor: text.length,
     };
   }
 
