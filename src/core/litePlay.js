@@ -77,7 +77,7 @@ export class Instrument {
         : 16;
     this.isDrums = isDrums;
     this.what_ = what;
-    this.howLoud = 1;
+    this.howLoud = 0.8;
     this.howLong = 1;
     this.on = new Uint8Array(128);
     this.instr = instr;
@@ -312,20 +312,15 @@ export class Instrument {
 
   delay(time, feedback) {
     if (time <= 0 && feedback <= 0) {
-      this.noDelay();
-      return;
+      if (delayLines.delete(this.chn)) {
+        csound.inputMessage("i-105." + this.chn + " 0 0.1 " + this.chn);
+      }
     }
     csound.tableSet(30, this.chn, Math.min(Math.max(time, 0), 2));
     csound.tableSet(31, this.chn, Math.min(Math.max(feedback, 0), 0.99));
     if (!delayLines.has(this.chn)) {
       delayLines.add(this.chn);
       csound.inputMessage("i105." + this.chn + " 0 -1 " + this.chn);
-    }
-  }
-
-  noDelay() {
-    if (delayLines.delete(this.chn)) {
-      csound.inputMessage("i-105." + this.chn + " 0 0.1 " + this.chn);
     }
   }
 }
