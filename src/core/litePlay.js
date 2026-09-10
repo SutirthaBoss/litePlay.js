@@ -77,7 +77,7 @@ export class Instrument {
         : 16;
     this.isDrums = isDrums;
     this.what_ = what;
-    this.howLoud = 1;
+    this.howLoud = 0.8;
     this.howLong = 1;
     this.on = new Uint8Array(128);
     this.instr = instr;
@@ -270,7 +270,7 @@ export class Instrument {
 
   pan(amount) {
     if (amount) {
-	this.autoPan(0);
+      this.autoPan(0);
     }
     csound.tableSet(
       3,
@@ -288,11 +288,7 @@ export class Instrument {
   }
 
   autoPan(hertz) {
-    csound.tableSet(
-      32,
-      this.chn,
-      hertz > 0 ? 1 / hertz : 0,
-    );
+    csound.tableSet(32, this.chn, hertz > 0 ? 1 / hertz : 0);
   }
 
   filterEnvelope(amount, att, dec, sus, rel) {
@@ -316,20 +312,15 @@ export class Instrument {
 
   delay(time, feedback) {
     if (time <= 0 && feedback <= 0) {
-      this.noDelay();
-      return;
+      if (delayLines.delete(this.chn)) {
+        csound.inputMessage("i-105." + this.chn + " 0 0.1 " + this.chn);
+      }
     }
     csound.tableSet(30, this.chn, Math.min(Math.max(time, 0), 2));
     csound.tableSet(31, this.chn, Math.min(Math.max(feedback, 0), 0.99));
     if (!delayLines.has(this.chn)) {
       delayLines.add(this.chn);
       csound.inputMessage("i105." + this.chn + " 0 -1 " + this.chn);
-    }
-  }
-
-  noDelay() {
-    if (delayLines.delete(this.chn)) {
-      csound.inputMessage("i-105." + this.chn + " 0 0.1 " + this.chn);
     }
   }
 }
@@ -363,9 +354,15 @@ export const sample = {
   play: function (...evtList) {
     this.instr.play(...evtList);
   },
+  stop: function () {
+    this.instr.stop();
+  },
   instrument: function (what = null, fo = 60, bpm = 0) {
     if (this.instr == null) return this.create(what, fo, bpm).instr;
     else return this.instr;
+  },
+  speed: function (val) {
+    return this.instr.speed(val);
   },
 };
 
@@ -1477,8 +1474,7 @@ export function onDrums() {
 export const silently = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Interface simples em Português
-
-// métodos para objetos
+// métodos para objetos e classes
 Instrument.prototype.toque = Instrument.prototype.play;
 Instrument.prototype.pare = Instrument.prototype.stop;
 Instrument.prototype.panAutomático = Instrument.prototype.autoPan;
@@ -1486,6 +1482,7 @@ Instrument.prototype.panAutomático = Instrument.prototype.autoPan;
 export const listaEventos = eventList;
 eventList.toque = eventList.play;
 eventList.criar = eventList.create;
+eventList.repetir = eventList.repeat;
 eventList.limpar = eventList.clear;
 eventList.inserir = eventList.insert;
 eventList.adicionar = eventList.add;
@@ -1500,6 +1497,20 @@ sequenciador.remover = sequencer.remove;
 sequenciador.ativarPausa = sequencer.togglePause;
 sequenciador.ativarMudo = sequencer.toggleMute;
 sequenciador.ativarSolo = sequencer.toggleSolo;
+
+export const amostra = sample;
+export const amostrador = Sampler;
+sample.carregar = sample.load;
+sample.repetir = sample.loop;
+sample.criar = sample.create;
+sample.toque = sample.play;
+sample.pare = function () {
+  return this.instr.stop();
+};
+sample.velocidade = sample.speed;
+
+//demais funções
+export const defineBpm = setBpm;
 
 export const algum = any;
 export const toque = play;
@@ -1540,15 +1551,6 @@ export const médio = midPitch;
 export const agudo = highPitch;
 
 // instrumentos
-class Instrumento extends Instrument {
-  constructor(pgm, isDrums = false, what = 60, insno = 10) {
-    super(pgm.number, isDrums, what, insno);
-  }
-  toque(...evtList) {
-    super.play(...evtList);
-  }
-}
-
 export const pianoDeCauda = grandPiano;
 export const pianoBrilhante = brightPiano;
 export const deCaudaElétrico = electricGrand;
