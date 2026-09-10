@@ -3,10 +3,9 @@
 // wiring) so the data and the text-insertion math can be unit tested
 // without a browser.
 
-// Every `code` block below is body-only JavaScript, meant to be inserted
-// inside a `function f() { ... }` that gets passed to `lpRun(f)`. Each one
-// was checked against the actual litePlay.js/extra.js implementations, so
-// clicking any card produces code that really runs.
+// Every `code` block below is ready-to-run JavaScript for the litePlay web
+// editor. Each one was checked against the actual litePlay.js/extra.js
+// implementations, so clicking any card produces code that really runs.
 export const SNIPPET_CATEGORIES = [
   {
     id: "basics",
@@ -284,12 +283,10 @@ export const SNIPPET_CATEGORIES = [
  * Computes the text to insert for a given snippet, without touching the DOM
  * or CodeMirror, so it can be unit tested directly.
  *
- * - If `doc` is empty/whitespace-only, wraps `code` in a fresh
- *   `function f() { ... } lpRun(f);` sketch and places the cursor right
- *   after the inserted code, so the next snippet click appends inside the
- *   same function body.
- * - Otherwise, inserts `code` at `cursorPos`, indented to match a function
- *   body, and moves the cursor to the end of the inserted text.
+ * - If `doc` is empty/whitespace-only, inserts `code` directly and places
+ *   the cursor right after the inserted text.
+ * - Otherwise, inserts `code` at `cursorPos` surrounded by newlines, and
+ *   moves the cursor to the end of the inserted text.
  */
 export function buildInsertion(doc, cursorPos, code) {
   if (doc.trim() === "") {
@@ -302,7 +299,7 @@ export function buildInsertion(doc, cursorPos, code) {
     };
   }
 
-  const insert = "\n" + indentBlock(code) + "\n";
+  const insert = "\n" + code + "\n";
   const pos = Math.max(0, Math.min(cursorPos, doc.length));
   return {
     from: pos,

@@ -30,45 +30,56 @@ describe('SNIPPET_CATEGORIES', () => {
 });
 
 describe('buildInsertion', () => {
-  it('wraps the snippet in a runnable sketch when the doc is empty', () => {
+  it('inserts the snippet directly when the doc is empty', () => {
     const result = buildInsertion('', 0, 'play(C4);');
     expect(result.from).toBe(0);
     expect(result.to).toBe(0);
-    expect(result.insert).toBe('function f() {\n  play(C4);\n}\nlpRun(f);\n');
-    // cursor lands right after the inserted code, still inside the function body
-    expect(result.insert.slice(0, result.cursor)).toBe(
-      'function f() {\n  play(C4);\n'
-    );
+    expect(result.insert).toBe('play(C4);');
+    expect(result.cursor).toBe('play(C4);'.length);
   });
 
   it('treats whitespace-only docs the same as empty', () => {
     const result = buildInsertion('   \n  ', 3, 'play(C4);');
+    expect(result.from).toBe(0);
     expect(result.to).toBe(6);
-    expect(result.insert.startsWith('function f() {\n')).toBe(true);
+    expect(result.insert).toBe('play(C4);');
+    expect(result.cursor).toBe('play(C4);'.length);
   });
 
-  it('indents multi-line snippets consistently', () => {
+  it('inserts multi-line snippets without indentation when doc is empty', () => {
     const result = buildInsertion('', 0, 'a();\nb();');
-    expect(result.insert).toBe('function f() {\n  a();\n  b();\n}\nlpRun(f);\n');
+    expect(result.insert).toBe('a();\nb();');
   });
 
   it('inserts at the cursor position without touching existing code', () => {
-    const doc = 'function f() {\n  \n}\nlpRun(f);\n';
-    const cursorPos = doc.indexOf('  \n') + 2; // inside the empty body
-    const result = buildInsertion(doc, cursorPos, 'play(C4);');
+    const doc = 'play(C4);';
+    const cursorPos = doc.length;
+    const result = buildInsertion(doc, cursorPos, 'guitar.play(E3);');
     expect(result.from).toBe(cursorPos);
     expect(result.to).toBe(cursorPos);
-    expect(result.insert).toBe('\n  play(C4);\n');
+    expect(result.insert).toBe('\nguitar.play(E3);\n');
 
     const next =
       doc.slice(0, result.from) + result.insert + doc.slice(result.to);
-    expect(next).toContain('play(C4);');
-    expect(next.startsWith('function f() {')).toBe(true);
+    expect(next).toBe('play(C4);\nguitar.play(E3);\n');
   });
 
   it('clamps an out-of-range cursor into the document bounds', () => {
     const result = buildInsertion('abc', 999, 'x();');
     expect(result.from).toBe(3);
     expect(result.to).toBe(3);
+    expect(result.insert).toBe('\nx();\n');
+  });
+
+  it('allows clicking a snippet when editor already has content', () => {
+    const first = buildInsertion('', 0, 'play(C4);');
+    const docAfterFirst = first.insert;
+    const second = buildInsertion(docAfterFirst, first.cursor, 'guitar.play(E3);');
+    const docAfterSecond =
+      docAfterFirst.slice(0, second.from) +
+      second.insert +
+      docAfterFirst.slice(second.to);
+    expect(docAfterSecond).toContain('play(C4);');
+    expect(docAfterSecond).toContain('guitar.play(E3);');
   });
 });

@@ -374,7 +374,7 @@ let editor = new EditorView({
   parent: document.getElementById("editor-container"),
 });
 
-// snippet palette: click a card to insert ready-made, working code
+// snippet palette: click a card to insert working code
 function insertSnippet(code) {
   const doc = editor.state.doc.toString();
   const cursorPos = editor.state.selection.main.head;
