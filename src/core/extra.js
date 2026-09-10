@@ -18,7 +18,7 @@ function resolveEvent(input) {
   if (typeof input === "object" && input !== null && !Array.isArray(input)) {
     return [
       input.what ?? input.oque ?? input.oQue ?? 60,
-      input.howLoud ?? input.quãoForte ?? input.intensidade ?? 0.8,
+      input.howLoud ?? input.quãoForte ?? input.intensidade ?? 1,
       input.when ?? input.quando ?? 0,
       input.howLong ?? input.quãoLongo ?? input.duração ?? 1,
       parseInstr(input.onSomething ?? input.noQue),
@@ -32,14 +32,14 @@ function resolveEvent(input) {
   if (Array.isArray(input) && input.length > 0) {
     return [
       input[0] ?? 60,
-      input[1] ?? 0.8,
+      input[1] ?? 1,
       input[2] ?? 0,
       input[3] ?? 1,
       parseInstr(input[4]),
     ];
   }
 
-  return [60, 0.8, 0, 1, parseInstr(null)];
+  return [60, 1, 0, 1, parseInstr(null)];
 }
 
 export function midiToName(midiValue) {
