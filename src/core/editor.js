@@ -20,8 +20,6 @@ import {
   register,
 } from "https://esm.sh/extendable-media-recorder";
 import { connect } from "https://esm.sh/extendable-media-recorder-wav-encoder";
-// add essentia
-import { toggleListening, stopListening } from "../listener/listener.js";
 
 // override function to print output in console
 const consoleOutput = document.getElementById("console-output");
@@ -91,10 +89,8 @@ const stopLP = async (event) => {
 import * as litePlayLang from "./litePlay.js";
 import { midiRecorder } from "./litePlay.js";
 import * as extra from "./extra.js";
-import * as listener from "../listener/listener.js";
 const lpKeys = Object.keys(litePlayLang);
 const extraKeys = Object.keys(extra);
-const listenerKeys = Object.keys(listener);
 const lpConstKeys = Object.keys(window.lpAutocomplete);
 
 function litePlayCompletions(context) {
@@ -105,7 +101,6 @@ function litePlayCompletions(context) {
   const sources = [
     { keys: lpKeys, lib: litePlayLang, sourceName: "litePlay" },
     { keys: extraKeys, lib: extra, sourceName: "extra" },
-    { keys: listenerKeys, lib: listener, sourceName: "listener" },
     { keys: lpConstKeys, lib: window.lpAutocomplete, sourceName: "constants" },
   ];
 
@@ -386,7 +381,6 @@ document.addEventListener(
         // expose all of litePlay.js exports to the global window
         Object.assign(window, liteplayEngine);
         Object.assign(window, extra);
-        Object.assign(window, listener);
         console.log("litePlay is ready!");
 
         // change button colors when ready
