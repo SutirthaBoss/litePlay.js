@@ -18,7 +18,7 @@ function resolveEvent(input) {
   if (typeof input === "object" && input !== null && !Array.isArray(input)) {
     return [
       input.what ?? input.oque ?? input.oQue ?? 60,
-      input.howLoud ?? input.quãoForte ?? input.intensidade ?? 0.8,
+      input.howLoud ?? input.quãoForte ?? input.intensidade ?? 1,
       input.when ?? input.quando ?? 0,
       input.howLong ?? input.quãoLongo ?? input.duração ?? 1,
       parseInstr(input.onSomething ?? input.noQue),
@@ -32,14 +32,14 @@ function resolveEvent(input) {
   if (Array.isArray(input) && input.length > 0) {
     return [
       input[0] ?? 60,
-      input[1] ?? 0.8,
+      input[1] ?? 1,
       input[2] ?? 0,
       input[3] ?? 1,
       parseInstr(input[4]),
     ];
   }
 
-  return [60, 0.8, 0, 1, parseInstr(null)];
+  return [60, 1, 0, 1, parseInstr(null)];
 }
 
 export function midiToName(midiValue) {
@@ -424,7 +424,7 @@ function changeTempo(eventInput, lastDuration = 1, steps = 10) {
   return l;
 }
 
-export function louder(eventInput, arg2, arg3) {
+export function louder(eventInput = [60, 0.5, 0, 1], arg2, arg3) {
   let lastAmp = 1;
   let steps = 1;
   if (typeof arg2 === "object" && arg2 !== null && !Array.isArray(arg2)) {
@@ -752,6 +752,7 @@ export const afinaçãoJusta = justIntonation;
 export const frequênciaParaMidi = frequencyToMidi;
 export const monótono = monotone;
 export const acordeAleatório = randomChord;
+export const acordeEmBloco = blockChord;
 export const arpejo = arpeggio;
 export const iterar = iterate;
 export const sequênciaIntervalar = intervalSequence;
