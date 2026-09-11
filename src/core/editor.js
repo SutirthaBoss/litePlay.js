@@ -20,8 +20,6 @@ import {
   register,
 } from "https://esm.sh/extendable-media-recorder";
 import { connect } from "https://esm.sh/extendable-media-recorder-wav-encoder";
-// add essentia
-import { toggleListening, stopListening } from "../listener/listener.js";
 // snippet palette
 import { SNIPPET_CATEGORIES, buildInsertion } from "./snippets.js";
 
@@ -93,10 +91,8 @@ const stopLP = async (event) => {
 import * as litePlayLang from "./litePlay.js";
 import { midiRecorder, soundfont } from "./litePlay.js";
 import * as extra from "./extra.js";
-import * as listener from "../listener/listener.js";
 const lpKeys = Object.keys(litePlayLang);
 const extraKeys = Object.keys(extra);
-const listenerKeys = Object.keys(listener);
 const lpConstKeys = Object.keys(window.lpAutocomplete);
 
 function litePlayCompletions(context) {
@@ -107,7 +103,6 @@ function litePlayCompletions(context) {
   const sources = [
     { keys: lpKeys, lib: litePlayLang, sourceName: "litePlay" },
     { keys: extraKeys, lib: extra, sourceName: "extra" },
-    { keys: listenerKeys, lib: listener, sourceName: "listener" },
     { keys: lpConstKeys, lib: window.lpAutocomplete, sourceName: "constants" },
   ];
 
@@ -494,7 +489,6 @@ document.addEventListener(
         // expose all of litePlay.js exports to the global window
         Object.assign(window, liteplayEngine);
         Object.assign(window, extra);
-        Object.assign(window, listener);
         console.log("litePlay is ready!");
 
         // change button colors when ready
@@ -685,41 +679,3 @@ if (logCheckbox) {
   });
 }
 
-// Machine listening
-const mlConsole = document.getElementById("ml-console");
-
-// Create the callback function to handle incoming data
-function handleNewMusicalEvent(eventData) {
-  const textOutput = `Event: [${eventData[0]}, ${eventData[1]}, ${eventData[2]}, ${eventData[3]}]\n`;
-
-  const mlConsole = document.getElementById("ml-console");
-
-  if (mlConsole) {
-    mlConsole.value += textOutput;
-    mlConsole.scrollTop = mlConsole.scrollHeight; // Auto-scroll to bottom
-  } else {
-    console.warn("Could not find the ML console in the HTML!");
-  }
-}
-
-const listenCheckbox = document.querySelector("#listen-check");
-if (listenCheckbox) {
-  listenCheckbox.addEventListener("change", async () => {
-    if (listenCheckbox.checked) {
-      if (!window.audio_context) {
-        console.error("Start the litePlay engine first!");
-        listenCheckbox.checked = false;
-        return;
-      }
-      try {
-        await toggleListening(window.audio_context, handleNewMusicalEvent);
-        console.log("Machine Listening successfully running in background.");
-      } catch (err) {
-        console.error("Machine Listening failed to start:", err);
-        listenCheckbox.checked = false;
-      }
-    } else {
-      stopListening();
-    }
-  });
-}
