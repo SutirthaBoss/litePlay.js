@@ -182,19 +182,6 @@ body .cm-gutters {
 	border: none !important;
 }
 
-.listenc {
-	flex: 5;
-	height: 200px;
-	font-size: 18px; 
-	font-family: monospace;
-	background: var(--editor-bg);
-	color: var(--editor-text);
-	border: none;
-	resize: none;
-	margin: 0;
-	box-sizing: border-box;
-}
-
 .console {
 	flex: 5;
 	width: 100%;
@@ -238,12 +225,14 @@ body .cm-gutters {
 
 a:link {
 	color: var(--link);
-	text-decoration: none;
+	text-decoration: underline;
+	text-underline-offset: 3px;
 }
 
 a:visited {
 	color: var(--link);
-  	text-decoration: none;
+  	text-decoration: underline;
+	text-underline-offset: 3px;
 }
 
 a:hover {
@@ -252,7 +241,7 @@ a:hover {
 }
 
 a:active {
-  	color: #ff6666;
+  	color: var(--link-hover);
   	text-decoration: underline;
 }
 
