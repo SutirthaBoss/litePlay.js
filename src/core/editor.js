@@ -406,16 +406,21 @@ function buildSnippetPalette() {
       const row = document.createElement("div");
       row.className = "snippet-item";
       row.dataset.searchText =
-        `${item.label} ${item.description}`.toLowerCase();
+        `${item.label} ${item.description || ""}`.trim().toLowerCase();
 
       const insertBtn = document.createElement("button");
       insertBtn.className = "snippet-insert";
       insertBtn.title = "Insert into your code";
-      insertBtn.innerHTML =
-        `<span class="snippet-label"></span>` +
-        `<span class="snippet-desc"></span>`;
-      insertBtn.querySelector(".snippet-label").textContent = item.label;
-      insertBtn.querySelector(".snippet-desc").textContent = item.description;
+      if (item.description) {
+        insertBtn.innerHTML =
+          `<span class="snippet-label"></span>` +
+          `<span class="snippet-desc"></span>`;
+        insertBtn.querySelector(".snippet-label").textContent = item.label;
+        insertBtn.querySelector(".snippet-desc").textContent = item.description;
+      } else {
+        insertBtn.innerHTML = `<span class="snippet-label"></span>`;
+        insertBtn.querySelector(".snippet-label").textContent = item.label;
+      }
       insertBtn.addEventListener("click", () => insertSnippet(item.code));
 
       const runBtn = document.createElement("button");

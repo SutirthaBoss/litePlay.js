@@ -11,12 +11,11 @@ describe('SNIPPET_CATEGORIES', () => {
     }
   });
 
-  it('every item has a label, description, and runnable code string', () => {
+  it('every item has a label and runnable code string', () => {
     for (const category of SNIPPET_CATEGORIES) {
       for (const item of category.items) {
         expect(item.id).toBeTruthy();
         expect(item.label).toBeTruthy();
-        expect(item.description).toBeTruthy();
         expect(typeof item.code).toBe('string');
         expect(item.code.trim().length).toBeGreaterThan(0);
       }
