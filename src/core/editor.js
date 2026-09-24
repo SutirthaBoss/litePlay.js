@@ -122,8 +122,8 @@ function litePlayCompletions(context) {
       return {
         label: keyword,
         type: cmType,
-        detail: jsType, // Shows "function" or "object" next to the name
-        info: source.sourceName, // Tooltip showing which file it came from
+        //detail: jsType, // Shows "function" or "object" next to the name
+        //info: source.sourceName, // Tooltip showing which file it came from
       };
     }),
   );
@@ -217,8 +217,35 @@ const functionSignatures = {
   panAutomático: "panAutomático(hertz)",
   pare: "pare()",
   instrumento: "instrumento(nomeDoInstrumento)",
-  escolha: "escolha(opcao1, opcao2, ...)",
+  escolha: "escolha(opção 1, opção 2, ...)",
   quieto: "quieto(ms)",
+  distortion: "distortion(amount)",
+  highpass: "highpass(cutoff)",
+  moogFilter: "moogFilter(cutoff, resonance)",
+  combFilter: "combFilter(decay, delayTime)",
+  noCombFilter: "noCombFilter()",
+  stringResonance: "stringResonance(frequency, feedback, mix)",
+  compressor: "compressor(amount, threshold)",
+  tremolo: "tremolo(rate, depth)",
+  limiter: "limiter(ceiling)",
+  ringModulate: "ringModulate(frequency, mix)",
+  flanger: "flanger(rate, depth, feedback)",
+  noFlanger: "noFlanger()",
+  chorus: "chorus(rate, depth)",
+  noChorus: "noChorus()",
+  phaser: "phaser(rate, num stages, feedback)",
+  noPhaser: "noPhaser()",
+  sampleHold: "sampleHold(rate, mix)",
+  convolve: "convolve(amount)",
+  noConvolve: "noConvolve()",
+  reverbTone: "reverbTone(size, damping)",
+  reverb: "reverb(amount)",
+  cutoff: "cutoff(amount)",
+  resonance: "resonance(amount)",
+  delay: "delay(time, feedback)",
+  shift: "shift(val)",
+  pan: "pan(amount)",
+  volume: "volume(amount)",
 };
 
 const signatureTooltipField = StateField.define({
@@ -405,8 +432,9 @@ function buildSnippetPalette() {
     category.items.forEach((item) => {
       const row = document.createElement("div");
       row.className = "snippet-item";
-      row.dataset.searchText =
-        `${item.label} ${item.description || ""}`.trim().toLowerCase();
+      row.dataset.searchText = `${item.label} ${item.description || ""}`
+        .trim()
+        .toLowerCase();
 
       const insertBtn = document.createElement("button");
       insertBtn.className = "snippet-insert";
@@ -683,4 +711,3 @@ if (logCheckbox) {
     logEverything = logCheckbox.checked;
   });
 }
-
