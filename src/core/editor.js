@@ -531,8 +531,6 @@ async function startRecording() {
     if (!encoderRegistered) {
       await register(await connect());
       encoderRegistered = true;
-      const recBtn = document.getElementById("rec-btn");
-      if (recBtn) recBtn.classList.add("start-rec");
     }
 
     connectedCsoundNode = await window.csound.getNode();
@@ -600,6 +598,8 @@ async function startRecording() {
     };
 
     mediaRecorder.start();
+    const recBtn = document.getElementById("rec-btn");
+    if (recBtn) recBtn.classList.add("start-rec");
     // Start MIDI recording in sync with WAV recording
     midiRecorder.start();
     console.log("Recording started...");
